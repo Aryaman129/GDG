@@ -1,0 +1,35 @@
+services:
+  # Backend API service
+  - type: web
+    name: conference-management-backend
+    env: node
+    plan: free
+    buildCommand: cd conference-management/backend && npm install && npx prisma generate && npm run build && npx prisma db push
+    startCommand: cd conference-management/backend && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: PORT
+        value: 10000
+    disk:
+      name: sqlite-data
+      mountPath: /opt/render/project/src/conference-management/backend/prisma
+      sizeGB: 1
+
+  # Frontend service
+  - type: web
+    name: conference-management-frontend
+    env: node
+    plan: free
+    buildCommand: cd conference-management/frontend && npm install && npm run build
+    startCommand: cd conference-management/frontend && npm start
+    envVars:
+      - key: NEXT_PUBLIC_API_URL
+        fromService:
+          type: web
+          name: conference-management-backend
+          envVarKey: RENDER_EXTERNAL_URL
+      - key: PORT
+        value: 3000
