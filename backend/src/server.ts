@@ -23,9 +23,17 @@ const corsOptions = {
   origin: process.env.CORS_ORIGIN || '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
+  credentials: true,
+  preflightContinue: false,
+  optionsSuccessStatus: 204
 };
+
+// Apply CORS middleware
 app.use(cors(corsOptions));
+
+// Handle OPTIONS requests explicitly
+app.options('*', cors(corsOptions));
+
 app.use(express.json()); // Middleware to parse JSON bodies
 
 // --- Basic Routes ---
@@ -34,10 +42,15 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 // --- API Routes ---
+// Using both /api/auth and /auth to support both old and new frontend code
 app.use("/api/auth", authRoutes);
+app.use("/auth", authRoutes); // Add this route to match frontend requests
 app.use("/api/speakers", speakerRoutes);
+app.use("/speakers", speakerRoutes); // Add this route to match frontend requests
 app.use("/api/bookings", bookingRoutes);
+app.use("/bookings", bookingRoutes); // Add this route to match frontend requests
 app.use("/api/admin", adminRoutes);
+app.use("/admin", adminRoutes); // Add this route to match frontend requests
 
 // --- Error Handling Middleware ---
 // Basic error handler - logs error and sends generic message
