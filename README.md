@@ -181,11 +181,6 @@ The following demo users are available for testing:
   - Password: password123
   - Role: Speaker who can set availability and view bookings
 
-- **Admin User**
-  - Email: admin@example.com
-  - Password: password123
-  - Role: Administrator with access to all features
-
 ## Deployment Information
 
 This application is deployed on Render's free tier, which has some limitations:
@@ -206,10 +201,34 @@ This application is deployed on Render's free tier, which has some limitations:
    - Browse available speakers
    - Book a session
    - View your QR code for check-in
-4. **Test the admin flow**:
-   - Log in as an admin
-   - Check in attendees using their QR codes
-   - View booking statistics
+
+### Deploying Your Own Instance
+
+To deploy this application to Render:
+
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/Aryaman129/GDG.git
+   cd GDG
+   ```
+
+2. **Deploy using the provided script**:
+   ```bash
+   # On Windows
+   .\deploy.sh
+
+   # On macOS/Linux
+   chmod +x deploy.sh
+   ./deploy.sh
+   ```
+
+3. **Follow the Blueprint deployment process on Render**:
+   - Log in to your Render account
+   - Create a new Blueprint
+   - Select your repository
+   - Apply the configuration
+
+For detailed deployment instructions, see the [DEPLOYMENT.md](./DEPLOYMENT.md) file.
 
 ### Source Code
 

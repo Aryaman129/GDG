@@ -19,6 +19,15 @@ if ! git rev-parse --is-inside-work-tree &> /dev/null; then
     exit 1
 fi
 
+# Add all changes
+echo "Adding all changes to git..."
+git add .
+
+# Commit changes
+echo "Enter a commit message (e.g., 'Prepare for Render deployment'):"
+read commit_message
+git commit -m "$commit_message"
+
 # Make sure we have the latest changes
 echo "Pulling latest changes from repository..."
 git pull
@@ -44,3 +53,7 @@ echo "- The first request after sleep may take 30-60 seconds to respond"
 echo "- Data persistence is not guaranteed between deployments"
 echo ""
 echo "For more information, see the DEPLOYMENT.md file."
+echo ""
+echo "Demo Accounts:"
+echo "- Regular User: user@example.com / password123"
+echo "- Speaker: speaker@example.com / password123"
