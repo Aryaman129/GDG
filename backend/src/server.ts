@@ -18,7 +18,14 @@ const port = process.env.PORT || 8000;
 const prisma = new PrismaClient();
 
 // --- Middleware ---
-app.use(cors()); // Enable CORS for all origins (adjust for production if needed)
+// Configure CORS with environment variable or allow all origins
+const corsOptions = {
+  origin: process.env.CORS_ORIGIN || '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+};
+app.use(cors(corsOptions));
 app.use(express.json()); // Middleware to parse JSON bodies
 
 // --- Basic Routes ---
