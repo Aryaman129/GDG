@@ -261,8 +261,15 @@ router.post("/login", loginHandler);
 
 // Initiate Google OAuth flow
 router.get("/google", (req, res) => {
-  const authUrl = getGoogleAuthUrl();
-  res.redirect(authUrl);
+  try {
+    const authUrl = getGoogleAuthUrl();
+    // Instead of redirecting directly, send the URL as a response
+    // This avoids issues with path-to-regexp
+    res.status(200).json({ authUrl });
+  } catch (error) {
+    console.error("Error generating Google auth URL:", error);
+    res.status(500).json({ error: "Failed to generate Google auth URL" });
+  }
 });
 
 // Handle Google OAuth callback

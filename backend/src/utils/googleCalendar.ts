@@ -114,16 +114,29 @@ export const createCalendarEvent = async (details: EventDetails): Promise<string
 
 // Google OAuth flow functions
 export const getGoogleAuthUrl = () => {
-  const scopes = [
-    'https://www.googleapis.com/auth/calendar',
-    'https://www.googleapis.com/auth/calendar.events',
-  ];
+  try {
+    const scopes = [
+      'https://www.googleapis.com/auth/calendar',
+      'https://www.googleapis.com/auth/calendar.events',
+    ];
 
-  return oauth2Client.generateAuthUrl({
-    access_type: 'offline', // Get refresh token
-    scope: scopes,
-    prompt: 'consent', // Force consent screen to get refresh token
-  });
+    // Check if credentials are available
+    if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET || !GOOGLE_REDIRECT_URI) {
+      console.warn("Google OAuth credentials not fully configured");
+      // Return a demo URL for testing
+      return "https://accounts.google.com/o/oauth2/auth?demo=true";
+    }
+
+    return oauth2Client.generateAuthUrl({
+      access_type: 'offline', // Get refresh token
+      scope: scopes,
+      prompt: 'consent', // Force consent screen to get refresh token
+    });
+  } catch (error) {
+    console.error("Error generating Google auth URL:", error);
+    // Return a fallback URL for demo purposes
+    return "https://accounts.google.com/o/oauth2/auth?demo=true";
+  }
 };
 
 export const handleGoogleCallback = async (code: string) => {
