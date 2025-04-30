@@ -1,0 +1,88 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+// Enum for user roles
+enum Role {
+  USER
+  SPEAKER
+  ADMIN
+}
+
+// User profiles table
+model Profile {
+  id           String    @id @default(uuid())
+  email        String    @unique
+  password     String    // Store hashed password
+  full_name    String?
+  role         Role      @default(USER)
+  otp_verified Boolean   @default(false)
+  created_at   DateTime  @default(now())
+  phone        String?   // Store phone number
+
+  // Optional: Store OTP secret and expiry if managing OTP state here
+  // otp_secret     String?
+  // otp_expires_at DateTime?
+
+  speakerProfile SpeakerProfile? // Relation to speaker profile (one-to-one)
+  bookings       Booking[]       // Relation to bookings made by the user (one-to-many)
+
+  @@map("profiles")
+}
+
+// Speaker-specific details
+model SpeakerProfile {
+  id             String    @id // References Profile.id
+  expertise      String?
+  bio            String?   // Speaker biography
+  price_per_hour Float?    // Using Float instead of Decimal for SQLite
+  avatar_url     String?   // URL to speaker's profile image
+  created_at     DateTime  @default(now())
+
+  profile     Profile       @relation(fields: [id], references: [id], onDelete: Cascade)
+  sessionSlots SessionSlot[] // Relation to slots offered by the speaker (one-to-many)
+
+  @@map("speaker_profiles")
+}
+
+// Available time slots for speakers
+model SessionSlot {
+  id           Int       @id @default(autoincrement())
+  speaker_id   String
+  session_date DateTime
+  hour         Int       // Check constraint (9-16) handled by DB
+  is_booked    Boolean   @default(false)
+  created_at   DateTime  @default(now())
+
+  speaker SpeakerProfile @relation(fields: [speaker_id], references: [id], onDelete: Cascade)
+  booking Booking?       // Relation to the booking for this slot (one-to-one)
+
+  @@unique([speaker_id, session_date, hour])
+  @@map("session_slots")
+}
+
+// Bookings made by users for specific slots
+model Booking {
+  id                Int       @id @default(autoincrement())
+  user_id           String
+  slot_id           Int       @unique // Ensures a slot is booked only once
+  qr_code_url       String?
+  calendar_event_id String?
+  checked_in        Boolean   @default(false)
+  created_at        DateTime  @default(now())
+
+  user Profile     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  slot SessionSlot @relation(fields: [slot_id], references: [id], onDelete: Cascade)
+
+  @@map("bookings")
+}
+

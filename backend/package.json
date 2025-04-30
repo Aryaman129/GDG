@@ -1,0 +1,59 @@
+{
+  "name": "conference-management-backend",
+  "version": "1.0.0",
+  "description": "Conference Management API with Speaker Session Booking and QR Check-In",
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "nodemon --exec ts-node src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:seed": "ts-node prisma/seed.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "conference",
+    "booking",
+    "api",
+    "supabase",
+    "typescript"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^6.7.0",
+    "@sendgrid/mail": "^8.1.5",
+    "@supabase/supabase-js": "^2.49.4",
+    "@types/node-fetch": "^2.6.12",
+    "@types/uuid": "^10.0.0",
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "date-fns": "^4.1.0",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "googleapis": "^148.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "jspdf": "^3.0.1",
+    "node-fetch": "^3.3.2",
+    "pg": "^8.15.6",
+    "qrcode": "^1.5.4",
+    "twilio": "^5.5.2",
+    "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.1",
+    "@types/jsonwebtoken": "^9.0.9",
+    "@types/node": "^22.15.2",
+    "@types/qrcode": "^1.5.5",
+    "nodemon": "^3.1.10",
+    "prisma": "^6.7.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
+  }
+}

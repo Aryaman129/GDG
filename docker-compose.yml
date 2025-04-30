@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"  # Frontend
+      - "8000:8000"  # Backend
+    environment:
+      - NODE_ENV=production
+      - SUPABASE_URL=https://xyfesgfkdzghvndhmnvj.supabase.co
+      - SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5ZmVzZ2ZrZHpnaHZuZGhtbnZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU3ODM2MDIsImV4cCI6MjA2MTM1OTYwMn0.rf2ucQcPZHxRvVPlHVOI_TBIgxlKGda2J0MmVVo54m8
+      - SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5ZmVzZ2ZrZHpnaHZuZGhtbnZqIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0NTc4MzYwMiwiZXhwIjoyMDYxMzU5NjAyfQ.m_AES_XQ7dXVTR0gOU6PGnxFcHGSORAPXHa3hyg_4aY
+      - DATABASE_URL=postgresql://postgres.xyfesgfkdzghvndhmnvj:htkfSJrmhHnVggNp@aws-0-ap-south-1.pooler.supabase.com:6543/postgres?pgbouncer=true
+      - DIRECT_URL=postgresql://postgres:htkfSJrmhHnVggNp@db.xyfesgfkdzghvndhmnvj.supabase.co:5432/postgres?sslmode=require
+      - JWT_SECRET=dtRTV1NY4rFMGRE0fKh6iOJGE70SNweh6MVXyOl78zp3wTjVND8cg1lqhl6CquJQeA7wTSoYod5Mjx/lygurEA==
+      - GOOGLE_CLIENT_ID=43509422835-et3g0rbd4mhch9rpg3c7t5i8qo7orbr2.apps.googleusercontent.com
+      - GOOGLE_CLIENT_SECRET=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
+      - GOOGLE_REDIRECT_URI=http://localhost:8000/api/auth/google/callback
+    volumes:
+      - ./backend:/app/backend
+      - ./frontend:/app/frontend
+      - /app/backend/node_modules
+      - /app/frontend/node_modules
