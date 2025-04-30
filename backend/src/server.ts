@@ -1,7 +1,9 @@
 import express, { Express, Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Role } from "@prisma/client";
+import { execSync } from "child_process";
+import path from "path";
 
 // Import routes
 import authRoutes from "./routes/auth.routes";
@@ -37,12 +39,48 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   res.status(500).json({ error: "Internal Server Error" });
 });
 
+// Function to check if database needs initialization
+async function initializeDatabase() {
+  try {
+    // Check if database has any users
+    const userCount = await prisma.profile.count();
+
+    if (userCount === 0) {
+      console.log("Database is empty, running seed script...");
+      try {
+        // Run the seed script
+        const seedPath = path.join(__dirname, '../prisma/seed.ts');
+        execSync(`npx ts-node ${seedPath}`, { stdio: 'inherit' });
+        console.log("Database seeded successfully!");
+      } catch (error) {
+        console.error("Error running seed script:", error);
+      }
+    } else {
+      console.log(`Database already contains ${userCount} users, skipping seed.`);
+    }
+  } catch (error) {
+    console.error("Error checking database:", error);
+    // If there's an error (like table doesn't exist), run migrations
+    console.log("Running database migrations...");
+    try {
+      execSync('npx prisma migrate deploy', { stdio: 'inherit' });
+      console.log("Migrations applied, now seeding...");
+      const seedPath = path.join(__dirname, '../prisma/seed.ts');
+      execSync(`npx ts-node ${seedPath}`, { stdio: 'inherit' });
+    } catch (seedError) {
+      console.error("Error during migration or seeding:", seedError);
+    }
+  }
+}
+
 // --- Server Startup ---
 async function main() {
-  // Optional: Add any startup logic here
   console.log("Connecting to database...");
   await prisma.$connect();
   console.log("Database connected.");
+
+  // Initialize database with seed data if needed
+  await initializeDatabase();
 
   app.listen(port, () => {
     console.log(`[server]: Server is running at http://localhost:${port}`);

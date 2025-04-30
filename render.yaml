@@ -13,10 +13,6 @@ services:
         generateValue: true
       - key: PORT
         value: 10000
-    disk:
-      name: sqlite-data
-      mountPath: /opt/render/project/src/conference-management/backend/prisma
-      sizeGB: 1
 
   # Frontend service
   - type: web

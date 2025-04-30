@@ -6,6 +6,19 @@ This project is a Conference Management System designed to facilitate the bookin
 
 This project was developed as part of the GDGoC SRM Recruitments 2025 Technical Tasks, merging requirements from the "Speaker Session Booking" and "QR-Based Event Check-In System" tasks, with additional enhancements like Google Calendar integration and a focus on a unique and impressive implementation leveraging AI tools.
 
+## Demo Environment
+
+**Important: This is a demo environment with the following characteristics:**
+
+- The application is hosted on Render's free tier
+- The database is automatically seeded with demo data on first startup
+- New data created during your session (new speakers, bookings, etc.) will persist as long as:
+  - The service doesn't go to sleep (after 15 minutes of inactivity)
+  - No new deployments are made
+  - No maintenance is performed by Render
+- If you return to the demo after some time, your previously created data may still be available, but it's not guaranteed
+- For the most reliable demo experience, use the pre-seeded demo accounts listed below
+
 ## Features
 
 *   **User Authentication:** Secure user signup and login using email/password (via Supabase Auth) and OTP verification (via Twilio).
@@ -158,10 +171,47 @@ If you prefer to run the application without Docker:
 
 The following demo users are available for testing:
 
-- **Speaker User**
-  - Email: test@gmail.com
-  - Password: testing
-
 - **Regular User**
-  - Email: user@gmail.com
-  - Password: user12
+  - Email: user@example.com
+  - Password: password123
+  - Role: Attendee who can book sessions with speakers
+
+- **Speaker User**
+  - Email: speaker@example.com
+  - Password: password123
+  - Role: Speaker who can set availability and view bookings
+
+- **Admin User**
+  - Email: admin@example.com
+  - Password: password123
+  - Role: Administrator with access to all features
+
+## Deployment Information
+
+This application is deployed on Render's free tier, which has some limitations:
+
+1. **Sleep Mode**: The service goes to sleep after 15 minutes of inactivity
+2. **Cold Start**: The first request after inactivity may take 30-60 seconds to respond
+3. **Data Persistence**: Data is stored in a SQLite database that persists between service restarts, but may be reset during deployments or maintenance
+
+### How to Use the Demo
+
+1. **Start with the pre-seeded accounts**: Log in using one of the demo accounts above
+2. **Test the speaker flow**:
+   - Log in as a speaker
+   - View and manage your availability
+   - Check your bookings
+3. **Test the attendee flow**:
+   - Log in as a regular user
+   - Browse available speakers
+   - Book a session
+   - View your QR code for check-in
+4. **Test the admin flow**:
+   - Log in as an admin
+   - Check in attendees using their QR codes
+   - View booking statistics
+
+### Source Code
+
+The complete source code for this project is available on GitHub:
+[https://github.com/Aryaman129/GDG](https://github.com/Aryaman129/GDG)
