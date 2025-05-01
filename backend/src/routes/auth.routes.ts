@@ -1,6 +1,6 @@
 import { Router, Request, Response, RequestHandler, NextFunction } from "express";
 import { PrismaClient, Role } from "@prisma/client";
-// Removed Google Calendar imports to fix deployment issues
+import { getGoogleAuthUrl, handleGoogleCallback } from "../utils/googleCalendar";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import twilio from "twilio";
@@ -257,9 +257,51 @@ router.post("/signup", signupHandler);
 router.post("/verify-otp", verifyOtpHandler);
 router.post("/login", loginHandler);
 
-// Google OAuth routes are disabled for deployment
-// The calendar functionality is still available through the createCalendarEvent function
-// but the OAuth flow is disabled to fix deployment issues
+// Google OAuth routes
+// Initiate Google OAuth flow
+router.get("/google", (req, res) => {
+  try {
+    const authUrl = getGoogleAuthUrl();
+    // Instead of redirecting directly, send the URL as a response
+    res.status(200).json({ authUrl });
+  } catch (error) {
+    console.error("Error generating Google auth URL:", error);
+    res.status(500).json({ error: "Failed to generate Google auth URL" });
+  }
+});
+
+// Handle Google OAuth callback
+router.get("/google/callback", asyncHandler(async (req, res, next) => {
+  const { code } = req.query;
+
+  if (!code || typeof code !== 'string') {
+    return res.status(400).json({ error: "Authorization code is required" });
+  }
+
+  try {
+    const result = await handleGoogleCallback(code);
+
+    if (!result.success) {
+      return res.status(500).json({ error: "Failed to get Google tokens", details: result.error });
+    }
+
+    // In a real application, you would:
+    // 1. Store the tokens in your database, associated with the user
+    // 2. Create or update the user's profile
+    // 3. Generate a session token
+
+    // For demo purposes, we'll just return the tokens
+    res.status(200).json({
+      message: "Google authentication successful",
+      // Don't expose tokens in production
+      tokens: result.tokens
+    });
+
+  } catch (error) {
+    console.error("Google OAuth Callback Error:", error);
+    next(error);
+  }
+}));
 
 export default router;
 

@@ -123,8 +123,8 @@ export const getGoogleAuthUrl = () => {
     // Check if credentials are available
     if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET || !GOOGLE_REDIRECT_URI) {
       console.warn("Google OAuth credentials not fully configured");
-      // Return a demo URL for testing
-      return "https://accounts.google.com/o/oauth2/auth?demo=true";
+      // Return a placeholder string instead of a URL
+      return "demo-auth-url";
     }
 
     return oauth2Client.generateAuthUrl({
@@ -134,8 +134,8 @@ export const getGoogleAuthUrl = () => {
     });
   } catch (error) {
     console.error("Error generating Google auth URL:", error);
-    // Return a fallback URL for demo purposes
-    return "https://accounts.google.com/o/oauth2/auth?demo=true";
+    // Return a placeholder string instead of a URL
+    return "demo-auth-url-fallback";
   }
 };
 
