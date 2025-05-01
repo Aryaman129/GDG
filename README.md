@@ -89,71 +89,6 @@ conference-management/
 │   └── package.json
 └── README.md
 ```
-
-## Setup Instructions
-
-### Prerequisites
-
-- Node.js (v18 or later)
-- npm or yarn
-
-### Option 1: Running Locally
-
-#### Backend Setup
-
-1. Navigate to the backend directory:
-   ```
-   cd conference-management/backend
-   ```
-
-2. Install dependencies:
-   ```
-   npm install
-   ```
-
-3. Generate Prisma client:
-   ```
-   npx prisma generate
-   ```
-
-4. Start the development server:
-   ```
-   npm run dev
-   ```
-
-#### Frontend Setup
-
-1. Navigate to the frontend directory:
-   ```
-   cd conference-management/frontend
-   ```
-
-2. Install dependencies:
-   ```
-   npm install
-   ```
-
-3. Create a `.env.local` file:
-   ```
-   NEXT_PUBLIC_API_URL=http://localhost:8000/api
-   ```
-
-4. Start the development server:
-   ```
-   npm run dev
-   ```
-
-5. Access the application at `http://localhost:3000`
-
-### Option 2: Using Docker
-
-1. Make sure you have Docker and Docker Compose installed
-2. Run the following command in the project root:
-   ```
-   docker-compose up
-   ```
-3. Access the application at `http://localhost:3000`
-
 ## Usage Guide
 
 ### For Attendees (User Role)
@@ -437,3 +372,68 @@ This project is for demonstration purposes only.
 - [QR Code](https://www.npmjs.com/package/qrcode)
 - [JWT](https://www.npmjs.com/package/jsonwebtoken)
 - [Render](https://render.com/) for hosting the application
+
+-
+## Setup Instructions 
+
+### Prerequisites
+
+- Node.js (v18 or later)
+- npm or yarn
+
+### Option 1: Running Locally
+
+#### Backend Setup
+
+1. Navigate to the backend directory:
+   ```
+   cd conference-management/backend
+   ```
+
+2. Install dependencies:
+   ```
+   npm install
+   ```
+
+3. Generate Prisma client:
+   ```
+   npx prisma generate
+   ```
+
+4. Start the development server:
+   ```
+   npm run dev
+   ```
+
+#### Frontend Setup
+
+1. Navigate to the frontend directory:
+   ```
+   cd conference-management/frontend
+   ```
+
+2. Install dependencies:
+   ```
+   npm install
+   ```
+
+3. Create a `.env.local` file:
+   ```
+   NEXT_PUBLIC_API_URL=http://localhost:8000/api
+   ```
+
+4. Start the development server:
+   ```
+   npm run dev
+   ```
+
+5. Access the application at `http://localhost:3000`
+
+### Option 2: Using Docker
+
+1. Make sure you have Docker and Docker Compose installed
+2. Run the following command in the project root:
+   ```
+   docker-compose up
+   ```
+3. Access the application at `http://localhost:3000`
