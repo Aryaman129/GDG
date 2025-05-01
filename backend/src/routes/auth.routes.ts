@@ -1,6 +1,6 @@
 import { Router, Request, Response, RequestHandler, NextFunction } from "express";
 import { PrismaClient, Role } from "@prisma/client";
-import { getGoogleAuthUrl, handleGoogleCallback } from "../utils/googleCalendar";
+// Google Calendar functionality completely removed
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import twilio from "twilio";
@@ -263,6 +263,7 @@ router.get("/google", (req, res) => {
   try {
     const authUrl = getGoogleAuthUrl();
     // Instead of redirecting directly, send the URL as a response
+    // This avoids issues with path-to-regexp
     res.status(200).json({ authUrl });
   } catch (error) {
     console.error("Error generating Google auth URL:", error);

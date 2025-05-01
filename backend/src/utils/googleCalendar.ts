@@ -127,11 +127,15 @@ export const getGoogleAuthUrl = () => {
       return "demo-auth-url";
     }
 
-    return oauth2Client.generateAuthUrl({
+    // Generate the auth URL but don't return it directly
+    const authUrl = oauth2Client.generateAuthUrl({
       access_type: 'offline', // Get refresh token
       scope: scopes,
       prompt: 'consent', // Force consent screen to get refresh token
     });
+
+    // Return the generated URL
+    return authUrl;
   } catch (error) {
     console.error("Error generating Google auth URL:", error);
     // Return a placeholder string instead of a URL
