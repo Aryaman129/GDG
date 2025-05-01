@@ -15,10 +15,11 @@ import { Label } from "@/components/ui/label";
 interface Stats {
   totalBookings: number;
   checkedInBookings: number;
-  bookingsPerSpeaker: Array<{
+  topSpeakers: Array<{
     speakerName: string;
     count: number;
   }>;
+  checkedInPercentage?: number;
 }
 
 export default function AdminDashboard() {
@@ -67,11 +68,11 @@ export default function AdminDashboard() {
         booking: response.data.booking
       });
       toast.success("Check-in successful!");
-      
+
       // Refresh stats after successful check-in
       const statsResponse = await adminAPI.getStats();
       setStats(statsResponse.data);
-      
+
       // Clear the input
       setQrPayload("");
     } catch (error: any) {
@@ -128,8 +129,8 @@ export default function AdminDashboard() {
                         This should be the JSON data from the QR code, e.g., {`{"bookingId":1,"userId":"123",...}`}
                       </p>
                     </div>
-                    <Button 
-                      type="submit" 
+                    <Button
+                      type="submit"
                       disabled={isCheckingIn}
                       className="w-full bg-neutral-900 hover:bg-neutral-800"
                     >
@@ -156,9 +157,9 @@ export default function AdminDashboard() {
                         {checkInResult.success ? '✓ Success' : '✗ Failed'}
                       </p>
                       <p className="mt-1 text-neutral-700">{checkInResult.message}</p>
-                      
+
                       {checkInResult.success && checkInResult.booking && (
-                        <motion.div 
+                        <motion.div
                           initial={{ opacity: 0, height: 0 }}
                           animate={{ opacity: 1, height: 'auto' }}
                           transition={{ duration: 0.3 }}
@@ -191,22 +192,22 @@ export default function AdminDashboard() {
 
           <TabsContent value="stats">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-              <StatsCard 
-                title="Total Bookings" 
-                value={stats?.totalBookings} 
-                isLoading={isLoadingStats} 
+              <StatsCard
+                title="Total Bookings"
+                value={stats?.totalBookings}
+                isLoading={isLoadingStats}
                 icon="📊"
               />
-              <StatsCard 
-                title="Checked In" 
-                value={stats?.checkedInBookings} 
-                isLoading={isLoadingStats} 
+              <StatsCard
+                title="Checked In"
+                value={stats?.checkedInBookings}
+                isLoading={isLoadingStats}
                 icon="✓"
               />
-              <StatsCard 
-                title="Check-in Rate" 
-                value={stats ? `${Math.round((stats.checkedInBookings / stats.totalBookings) * 100)}%` : undefined} 
-                isLoading={isLoadingStats} 
+              <StatsCard
+                title="Check-in Rate"
+                value={stats?.checkedInPercentage !== undefined ? `${stats.checkedInPercentage}%` : undefined}
+                isLoading={isLoadingStats}
                 icon="📈"
               />
             </div>
@@ -223,12 +224,12 @@ export default function AdminDashboard() {
                     <Skeleton className="h-8 w-full" />
                     <Skeleton className="h-8 w-full" />
                   </div>
-                ) : stats?.bookingsPerSpeaker.length === 0 ? (
+                ) : !stats?.topSpeakers || stats.topSpeakers.length === 0 ? (
                   <p className="text-neutral-600">No booking data available.</p>
                 ) : (
                   <div className="space-y-4">
-                    {stats?.bookingsPerSpeaker.map((item, index) => (
-                      <motion.div 
+                    {stats.topSpeakers.map((item, index) => (
+                      <motion.div
                         key={index}
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
@@ -240,10 +241,10 @@ export default function AdminDashboard() {
                         </div>
                         <div className="flex items-center">
                           <div className="w-48 bg-neutral-100 rounded-full h-2.5 mr-2">
-                            <motion.div 
+                            <motion.div
                               className="bg-neutral-700 h-2.5 rounded-full"
                               initial={{ width: 0 }}
-                              animate={{ width: `${(item.count / Math.max(...stats.bookingsPerSpeaker.map(s => s.count))) * 100}%` }}
+                              animate={{ width: `${(item.count / Math.max(...stats.topSpeakers.map(s => s.count))) * 100}%` }}
                               transition={{ duration: 0.5, delay: index * 0.1 }}
                             />
                           </div>
