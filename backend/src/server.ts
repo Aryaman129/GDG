@@ -32,7 +32,8 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 // Handle OPTIONS requests explicitly
-app.options('*', cors(corsOptions));
+// In Express 5, we need to use a RegExp instead of '*'
+app.options(/(.*)/, cors(corsOptions));
 
 app.use(express.json()); // Middleware to parse JSON bodies
 
