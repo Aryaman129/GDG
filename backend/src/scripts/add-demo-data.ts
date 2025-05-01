@@ -10,7 +10,7 @@ interface SpeakerData {
   password: string;
   fullName: string;
   phone: string;
-  role: Role.SPEAKER;
+  role: "SPEAKER";
   expertise: string;
   bio: string;
   pricePerHour: number;
@@ -21,7 +21,7 @@ interface UserData {
   password: string;
   fullName: string;
   phone: string;
-  role: Role.USER;
+  role: "USER";
 }
 
 interface AdminData {
@@ -29,7 +29,7 @@ interface AdminData {
   password: string;
   fullName: string;
   phone: string;
-  role: Role.ADMIN;
+  role: "ADMIN";
 }
 
 type UserDataType = SpeakerData | UserData | AdminData;

@@ -1,6 +1,6 @@
 import { Router, Request, Response, RequestHandler, NextFunction } from "express";
 import { PrismaClient, Role } from "@prisma/client";
-import { getGoogleAuthUrl, handleGoogleCallback } from "../utils/googleCalendar";
+// Removed Google Calendar imports to fix deployment issues
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import twilio from "twilio";

@@ -2,7 +2,17 @@ import { Router, Request, Response, RequestHandler, NextFunction } from "express
 import { PrismaClient, Role } from "@prisma/client";
 import { authenticateToken, authorizeRole } from "../middleware/auth.middleware";
 import QRCode from "qrcode";
-import { createCalendarEvent } from "../utils/googleCalendar"; // Import the calendar utility
+// Import calendar utility with a fallback
+let createCalendarEvent: any;
+try {
+  // Try to import the calendar utility, but don't fail if it's not available
+  const { createCalendarEvent: calendarFn } = require("../utils/googleCalendar");
+  createCalendarEvent = calendarFn;
+} catch (error) {
+  console.warn("Google Calendar integration is disabled");
+  // Create a dummy function that returns null
+  createCalendarEvent = async () => null;
+}
 import { addHours } from "date-fns"; // Helper for calculating end time
 import { sendEmail } from "../utils/emailService"; // Import email service
 
