@@ -4,11 +4,41 @@ import { addDays, startOfDay } from 'date-fns';
 
 const prisma = new PrismaClient();
 
+// Define types for our user data
+interface SpeakerData {
+  email: string;
+  password: string;
+  fullName: string;
+  phone: string;
+  role: Role.SPEAKER;
+  expertise: string;
+  bio: string;
+  pricePerHour: number;
+}
+
+interface UserData {
+  email: string;
+  password: string;
+  fullName: string;
+  phone: string;
+  role: Role.USER;
+}
+
+interface AdminData {
+  email: string;
+  password: string;
+  fullName: string;
+  phone: string;
+  role: Role.ADMIN;
+}
+
+type UserDataType = SpeakerData | UserData | AdminData;
+
 async function main() {
   console.log('Starting to add demo data...');
 
   // Create demo speakers
-  const demoSpeakers = [
+  const demoSpeakers: SpeakerData[] = [
     {
       email: 'tech_speaker@example.com',
       password: 'password123',
@@ -62,7 +92,7 @@ async function main() {
   ];
 
   // Create demo user
-  const demoUser = {
+  const demoUser: UserData = {
     email: 'user@example.com',
     password: 'password123',
     fullName: 'Demo User',
@@ -71,7 +101,7 @@ async function main() {
   };
 
   // Create demo admin
-  const demoAdmin = {
+  const demoAdmin: AdminData = {
     email: 'admin@example.com',
     password: 'password123',
     fullName: 'Admin User',
@@ -80,22 +110,26 @@ async function main() {
   };
 
   // Create all users
-  for (const userData of [...demoSpeakers, demoUser, demoAdmin]) {
-    const { email, password, fullName, phone, role, expertise, bio, pricePerHour } = userData;
-    
+  for (const userData of [...demoSpeakers, demoUser, demoAdmin] as UserDataType[]) {
+    const { email, password, fullName, phone, role } = userData;
+    // Extract speaker-specific properties only if it's a speaker
+    const expertise = 'expertise' in userData ? userData.expertise : undefined;
+    const bio = 'bio' in userData ? userData.bio : undefined;
+    const pricePerHour = 'pricePerHour' in userData ? userData.pricePerHour : undefined;
+
     // Check if user already exists
-    const existingUser = await prisma.user.findUnique({
+    const existingUser = await prisma.profile.findUnique({
       where: { email }
     });
-    
+
     if (!existingUser) {
       console.log(`Creating user: ${fullName} (${email})`);
-      
+
       // Hash password
       const hashedPassword = await hash(password, 10);
-      
+
       // Create user
-      const user = await prisma.user.create({
+      const user = await prisma.profile.create({
         data: {
           email,
           password: hashedPassword,
@@ -105,7 +139,7 @@ async function main() {
           otp_verified: true // Skip OTP verification for demo
         }
       });
-      
+
       // Create speaker profile if role is SPEAKER
       if (role === Role.SPEAKER && expertise && bio && pricePerHour) {
         await prisma.speakerProfile.create({
@@ -116,25 +150,25 @@ async function main() {
             price_per_hour: pricePerHour
           }
         });
-        
+
         // Create available slots for the next 7 days
         await createSlotsForSpeaker(user.id);
       }
     } else {
       console.log(`User already exists: ${email}`);
-      
+
       // If speaker, ensure they have slots
       if (role === Role.SPEAKER) {
         const speakerProfile = await prisma.speakerProfile.findUnique({
           where: { id: existingUser.id }
         });
-        
+
         if (speakerProfile) {
           // Check if speaker has any slots
           const slots = await prisma.sessionSlot.findMany({
             where: { speaker_id: existingUser.id }
           });
-          
+
           if (slots.length === 0) {
             console.log(`Creating slots for existing speaker: ${fullName}`);
             await createSlotsForSpeaker(existingUser.id);
@@ -143,7 +177,7 @@ async function main() {
       }
     }
   }
-  
+
   console.log('Demo data added successfully!');
 }
 
@@ -152,7 +186,7 @@ async function createSlotsForSpeaker(speakerId: string) {
   for (let day = 0; day < 7; day++) {
     const date = addDays(new Date(), day);
     const sessionDate = startOfDay(date);
-    
+
     // Create slots for hours 9-16 (9 AM to 4 PM)
     for (let hour = 9; hour <= 16; hour++) {
       // Randomly decide if this slot should be created (70% chance)
