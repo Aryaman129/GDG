@@ -8,6 +8,10 @@ The application is deployed and available at:
 - **Frontend**: [https://conference-management-frontend-lzow.onrender.com](https://conference-management-frontend-lzow.onrender.com)
 - **Backend API**: [https://conference-management-backend-pw62.onrender.com](https://conference-management-backend-pw62.onrender.com)
 
+First activate the backend by clicking on the backend link it will show that conference management API is running and then activate the frontend by clicking on the frontend link.
+
+This issue is due to render's free tier.
+
 ## Project Overview
 
 The Conference Management System is a full-stack web application that facilitates booking and managing speaker sessions at conferences. It allows:
